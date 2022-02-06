@@ -96,11 +96,11 @@ public class Questions {
    * provided.
    */
   protected Object get(Request request, Response response) {
-    logger.info("Received questions get:");
+    logger.info("Received questions get:"); //logger, tracking
 
     String id = request.queryParams("id");
-    boolean auth = authorised(request.queryParams("token"));
-
+    boolean auth = authorised(request.queryParams("token")); //point aspectj
+    //user:pass:type ->  hash
     return id == null
       ? this.get(request, response, auth)
       : this.get(request, response, id, auth);

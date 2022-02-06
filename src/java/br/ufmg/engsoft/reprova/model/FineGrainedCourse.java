@@ -1,5 +1,6 @@
 package br.ufmg.engsoft.reprova.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FineGrainedCourse extends Course {
@@ -8,6 +9,9 @@ public class FineGrainedCourse extends Course {
      */
     public final List<Student> students;
 
+    public FineGrainedCourse(){
+        this(2022, Reference._2, "Reuse", new ArrayList<>());
+    }
     public FineGrainedCourse(int year, Reference ref, String courseName, List<Student> students) {
         super(year, ref, courseName);
         this.students = students;
