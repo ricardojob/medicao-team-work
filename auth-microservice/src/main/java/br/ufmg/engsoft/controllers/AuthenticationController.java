@@ -4,8 +4,13 @@ import br.ufmg.engsoft.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
 class AuthenticationController {
     private AuthService authService;
 
@@ -14,12 +19,12 @@ class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public User login(String username, String password) {
-        return authService.authenticate(username, password);
+    public HashMap<String, Object> login(@RequestBody Map<String, String> input) {
+        return authService.authenticate(input.get("username"), input.get("password"));
     }
 
     @PostMapping("/is-teacher")
-    public Boolean isTeacher(Integer userId) {
-        return authService.isTeacher(userId);
+    public HashMap<String, Object> isTeacher(@RequestBody Map<String, String> input) {
+        return authService.isTeacher(input.get("userId"));
     }
 }

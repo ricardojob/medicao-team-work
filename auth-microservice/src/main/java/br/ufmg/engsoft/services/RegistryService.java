@@ -6,6 +6,7 @@ import br.ufmg.engsoft.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -16,18 +17,21 @@ public class RegistryService {
         this.userRepository = new UserRepository();
     }
 
-    public User register(String username, String password, UserType userType) {
+    public HashMap<String, Object> register(String username, String password, UserType userType) {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(password);
         newUser.setType(userType.toString());
 
+        HashMap<String, Object> response = new HashMap<String, Object>();
+
         try {
             userRepository.add(newUser);
-            return newUser;
+            response.put("userId", newUser.getId());
+            return response;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return null;
+            response.put("errorMessage", e.getMessage());
+            return response;
         }
     }
 }

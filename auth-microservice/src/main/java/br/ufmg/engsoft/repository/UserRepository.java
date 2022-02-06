@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -38,9 +39,9 @@ public class UserRepository {
         return query.getResultList();
     }
 
-    public boolean isUserFromType(Integer userId, String type) {
+    public boolean isUserFromType(String userId, String type) {
         Query query = entityManager.createQuery("SELECT u FROM User u WHERE u.id = ?1 AND u.type = ?2");
-        query.setParameter(1, userId);
+        query.setParameter(1, Long.parseLong(userId));
         query.setParameter(2, type);
         return !query.getResultList().isEmpty();
     }
