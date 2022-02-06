@@ -4,7 +4,7 @@
 
 O projeto foi desenvolvido com SpringBoot e Mysql
 A forma de autenticação utilizada é apenas uma prova de conceito.
-##Instalação
+## Instalação
 
 Para utilizar o componente, rode o seguinte comando para instalar suas dependências:
 <code>mvn install</code> <br><br>
@@ -12,7 +12,7 @@ Após isso, é necessário que tenha instalado uma instância do MYSQL. Configur
 os detalhes de conexão.<br>
 Por fim, crie um banco de dados chamado <code>reuseproject</code>
 
-##Utilização
+## Utilização
 
 O projeto pode ser executado a partir da classe <code>AuthModuleApplication</code>
 <br>
