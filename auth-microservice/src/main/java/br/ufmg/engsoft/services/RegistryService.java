@@ -10,8 +10,12 @@ import java.util.List;
 
 @Service
 public class RegistryService {
-    @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
+
+    public RegistryService() {
+        this.userRepository = new UserRepository();
+    }
+
     public User register(String username, String password, UserType userType) {
         User newUser = new User();
         newUser.setUsername(username);

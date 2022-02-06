@@ -7,8 +7,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 class AuthenticationController {
-    @Autowired
     private AuthService authService;
+
+    public AuthenticationController() {
+        this.authService = new AuthService();
+    }
 
     @PostMapping("/login")
     public User login(String username, String password) {

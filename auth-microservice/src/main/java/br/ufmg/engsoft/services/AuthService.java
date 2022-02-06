@@ -10,8 +10,12 @@ import java.util.List;
 
 @Service
 public class AuthService {
-    @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
+
+    public AuthService() {
+        this.userRepository = new UserRepository();
+    }
+
     public User authenticate(String username, String password) {
         List<User> users = userRepository.findByUsernameAndPassword(username, password);
 

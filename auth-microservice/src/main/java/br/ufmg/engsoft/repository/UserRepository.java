@@ -9,7 +9,7 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.util.List;
 
-@Repository
+
 public class UserRepository {
 
     private EntityManager entityManager;
