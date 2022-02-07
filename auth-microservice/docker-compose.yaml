@@ -1,0 +1,27 @@
+version: '2.1'
+
+services:
+
+  reprova-auth-module:
+    container_name: auth-module-repr
+    build: .
+    ports:
+      - "8090:8080"
+    depends_on:
+      mysql-auth-module:
+        condition: service_healthy
+
+  mysql-auth-module:
+    container_name: mysql-auth
+    image: mysql/mysql-server
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=admin
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=reuseproject
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
