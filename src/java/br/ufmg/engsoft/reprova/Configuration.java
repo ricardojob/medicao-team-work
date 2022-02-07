@@ -9,7 +9,7 @@ import java.util.Properties;
  */
 public class Configuration {
     public enum Granularity { COARSE_GRAINED, FINE_GRAINED }
-    public enum ScoreFileType {CSV, JSON}
+    public enum ScoreFileType {CSV, JSON, XML}
     private static Granularity granularity = null;
     private static ScoreFileType scoreFileType = null;
     private static boolean isLoaded = false;
@@ -85,6 +85,15 @@ public class Configuration {
         }
         scoreFileType = ScoreFileType.JSON;
     }
+    public static void setScoreFileXml(){
+        if (Objects.isNull(granularity)){
+            readConfiguration();
+        }
+        else{
+            isLoaded = true;
+        }
+        scoreFileType = ScoreFileType.XML;
+    }
     public static boolean isCsv(){
         if (Objects.isNull(granularity)) {
             readConfiguration();
@@ -96,5 +105,11 @@ public class Configuration {
             readConfiguration();
         }
         return scoreFileType.equals(ScoreFileType.JSON);
+    }
+    public static boolean isXml(){
+        if (Objects.isNull(granularity)) {
+            readConfiguration();
+        }
+        return scoreFileType.equals(ScoreFileType.XML);
     }
 }

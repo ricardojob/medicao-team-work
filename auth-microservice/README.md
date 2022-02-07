@@ -10,7 +10,6 @@ Antes de tudo, execute <code>mvn clean install -DskipTests</code> para fazer o b
 <br>
 Para utilizar o componente, execute o trecho <code>docker-compose up --build</code>, que inicializará dois contâiners docker, um que proverá um servidor mysql e outro que proverá a aplicação spring.
 
-
 ## Utilização
 
 O projeto pode ser executado a partir da classe <code>AuthModuleApplication</code> e estará disponível no endereço <code>localhost:8090/</code>
