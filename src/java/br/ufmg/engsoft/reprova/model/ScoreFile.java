@@ -12,10 +12,7 @@ public abstract class ScoreFile {
 
     public abstract Course getScoredCourseFromFile(BufferedReader reader) throws IOException;
     public  boolean validateFile(String submittedFileName){
-        if (submittedFileName.endsWith(this.format)){
-            return true;
-        }
-        return false;
+        return submittedFileName.endsWith(this.format);
     }
     public String getFormat(){
         return this.format;
