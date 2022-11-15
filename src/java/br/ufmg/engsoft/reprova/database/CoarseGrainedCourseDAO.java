@@ -25,6 +25,15 @@ public class CoarseGrainedCourseDAO extends CourseDAO {
     public CoarseGrainedCourseDAO(Mongo db, Json json) {
         super(db, json);
     }
+    
+    @Override
+    private boolean verifyand(Course course) {
+    	return and(
+    				eq("year", course.year),
+    				eq("ref", course.ref.value),
+    				eq("courseName", course.courseName)
+    			    );
+    }
 
     @Override
     public void add(Course course) {
@@ -38,11 +47,7 @@ public class CoarseGrainedCourseDAO extends CourseDAO {
     			.append("courseName", course.courseName)
     			.append("scores", ((CoarseGrainedCourse) course).score);
     	
-    	this.collection.replaceOne(and(
-										eq("year", course.year),
-										eq("ref", course.ref.value),
-										eq("courseName", course.courseName)
-									), doc, (new UpdateOptions()).upsert(true));
+    	this.collection.replaceOne(verifyand(course), doc, (new UpdateOptions()).upsert(true));
     	logger.info("Stored course " + doc.get("courseName") +  ": " + doc.get("year") + "/" + doc.get("ref"));
     }
 
@@ -51,11 +56,7 @@ public class CoarseGrainedCourseDAO extends CourseDAO {
     	if (course == null) {
     		throw new IllegalArgumentException("course mustn't be null");
     	}
-    	Document doc = this.collection.find(and(
-    												eq("year", course.year),
-    												eq("ref", course.ref.value),
-    												eq("courseName", course.courseName)
-    												)).first();
+    	Document doc = this.collection.find(verifyand(course)).first();
         return new CoarseGrainedCourse(doc.getInteger("year"),
         							   Course.Reference.fromInt(doc.getInteger("ref")),
         							   doc.getString("courseName"),
@@ -67,11 +68,7 @@ public class CoarseGrainedCourseDAO extends CourseDAO {
     	if (course == null) {
     		throw new IllegalArgumentException("course mustn't be null");
     	}
-    	boolean result = this.collection.deleteOne(and(
-														eq("year", course.year),
-														eq("ref", course.ref.value),
-														eq("courseName", course.courseName)
-													)).wasAcknowledged();
+    	boolean result = this.collection.deleteOne(verifyand(course)).wasAcknowledged();
     	if (result)
     		logger.info("Deleted course " + course.courseName +  ": " + course.year + "/" + course.ref.value);
     	else
