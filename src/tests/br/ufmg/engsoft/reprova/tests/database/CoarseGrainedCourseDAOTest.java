@@ -15,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CoarseGrainedCourseDAOTest extends BaseTest {
 	private static CoarseGrainedCourseDAO dao;
+
+//    CourseFactory factory = new CoarseGrainedCourseFactory();
     @BeforeEach
     public  void setup() {
 //		logger.info("Starting DB connection");
@@ -30,14 +32,14 @@ public class CoarseGrainedCourseDAOTest extends BaseTest {
 
 	@Test
 	void test_insertion() {
-		CourseFactory factory = new CoarseGrainedCourseFactory();
+
         Course course = factory.createCourse(2019, Course.Reference._1, "test_insertion", 50.0f);
         dao.add(course);
 	}
 	
 	@Test
 	void test_retrieval() {
-		CourseFactory factory = new CoarseGrainedCourseFactory();
+//		CourseFactory factory = new CoarseGrainedCourseFactory();
         CoarseGrainedCourse course = (CoarseGrainedCourse)factory.createCourse(2019, Course.Reference._1, "test_retrieval", 50.0f);
         dao.add(course);
         Course course2 = dao.get(course);

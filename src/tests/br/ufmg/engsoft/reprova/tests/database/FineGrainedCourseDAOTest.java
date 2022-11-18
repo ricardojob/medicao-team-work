@@ -24,7 +24,9 @@ public class FineGrainedCourseDAOTest extends BaseTest {
 //	private static final Logger logger = LoggerFactory.getLogger(FineGrainedCourseDAOTest.class);
 //	private static Mongo db;
 //	private static Json json;
-	private static FineGrainedCourseDAO dao;
+	private FineGrainedCourseDAO dao;
+//    private CourseFactory factory = new FineGrainedCourseFactory();
+
 	@BeforeEach
     public  void setup() {
 //		logger.info("Starting DB connection");
@@ -51,7 +53,6 @@ public class FineGrainedCourseDAOTest extends BaseTest {
         Student student1 = new Student("id1", score1);
         float score2 = 49.0f;
         Student student2 = new Student("id2", score2);
-        CourseFactory factory = new FineGrainedCourseFactory();
         Course course = factory.createCourse(2019, Course.Reference._1, "Software Reuse", Arrays.asList(student1, student2));
         dao.add(course);
 	}
@@ -59,7 +60,7 @@ public class FineGrainedCourseDAOTest extends BaseTest {
 	@Disabled
 	@Test
 	void test_retrieval() {
-		CourseFactory factory = new FineGrainedCourseFactory();
+
         FineGrainedCourse course = (FineGrainedCourse)factory.createCourse(2019, Course.Reference._1, "test_retrieval", 50.0f);
         dao.add(course);
         Course course2 = dao.get(course);
