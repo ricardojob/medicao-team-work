@@ -6,19 +6,20 @@ import br.ufmg.engsoft.reprova.model.Course;
 import br.ufmg.engsoft.reprova.routes.Command;
 //import com.google.gson.JsonObject;
 //import com.google.gson.JsonParser;
+import br.ufmg.engsoft.reprova.routes.CourseAdapter;
+import br.ufmg.engsoft.reprova.routes.mapper.CourseJsonRequest;
 import spark.Request;
 import spark.Response;
 
 public class FindCourseCommand extends Command {
     private final CourseDAO courseDAO;
-
+    private CourseAdapter adapter = new CourseJsonRequest();
     public FindCourseCommand(CourseDAO courseDAO) {
         this.courseDAO = courseDAO;
     }
 
     public Object execute(Request request, Response response) {
-        CourseJsonRequest adapter = new CourseJsonRequest(request);
-        Course course = adapter.transform();
+        Course course = adapter.transform(request);
         course = courseDAO.get(course);
         return course;
     }

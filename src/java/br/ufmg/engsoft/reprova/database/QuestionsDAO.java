@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import br.ufmg.engsoft.reprova.model.Course;
+import br.ufmg.engsoft.reprova.routes.mapper.QuestionFromDocument;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import static com.mongodb.client.model.Filters.and;
@@ -35,12 +36,13 @@ public class QuestionsDAO {
   /**
    * Json formatter.
    */
-  protected final Json json;
+//  protected  Json json;
+  protected QuestionFromDocument adapter;
 
   /**
    * Questions collection.
    */
-  protected final MongoCollection<Document> collection;
+  protected  MongoCollection<Document> collection;
 
 
 
@@ -59,7 +61,7 @@ public class QuestionsDAO {
 
     this.collection = db.getCollection("questions");
 
-    this.json = json;
+    this.adapter = new QuestionFromDocument(json);
   }
 
 
@@ -70,28 +72,28 @@ public class QuestionsDAO {
    * @throws IllegalArgumentException  if any parameter is null
    * @throws IllegalArgumentException  if the given document is an invalid Question
    */
-  protected Question parseDoc(Document document) {
-    if (document == null)
-      throw new IllegalArgumentException("document mustn't be null");
-
-    String doc = document.toJson();
-
-    logger.info("Fetched question: " + doc);
-
-    try {
-      Question question = json
-        .parse(doc, Question.Builder.class)
-        .build();
-
-      logger.info("Parsed question: " + question);
-
-      return question;
-    }
-    catch (Exception e) {
-      logger.error("Invalid document in database!", e);
-      throw new IllegalArgumentException(e);
-    }
-  }
+//  protected Question parseDoc(Document document) {
+//    if (document == null)
+//      throw new IllegalArgumentException("document mustn't be null");
+//
+//    String doc = document.toJson();
+//
+//    logger.info("Fetched question: " + doc);
+//
+//    try {
+//      Question question = json
+//        .parse(doc, Question.Builder.class)
+//        .build();
+//
+//      logger.info("Parsed question: " + question);
+//
+//      return question;
+//    }
+//    catch (Exception e) {
+//      logger.error("Invalid document in database!", e);
+//      throw new IllegalArgumentException(e);
+//    }
+//  }
 
 
   /**
@@ -106,7 +108,7 @@ public class QuestionsDAO {
 
     Question question = this.collection
       .find(eq(new ObjectId(id)))
-      .map(this::parseDoc)
+      .map(adapter::parseDoc)
       .first();
 
     if (question == null)
@@ -142,7 +144,7 @@ public class QuestionsDAO {
     ArrayList<Question> result = new ArrayList<Question>();
 
     doc.projection(fields(exclude("statement")))
-      .map(this::parseDoc)
+      .map(adapter::parseDoc)
       .into(result);
 
     return result;

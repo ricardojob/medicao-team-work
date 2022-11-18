@@ -5,6 +5,8 @@ import br.ufmg.engsoft.reprova.model.Course;
 //import br.ufmg.engsoft.reprova.model.ScoreFile;
 //import br.ufmg.engsoft.reprova.model.ScoreFileFactory;
 import br.ufmg.engsoft.reprova.routes.Command;
+import br.ufmg.engsoft.reprova.routes.CourseAdapter;
+import br.ufmg.engsoft.reprova.routes.mapper.CourseFromRequest;
 import spark.Request;
 import spark.Response;
 
@@ -27,17 +29,16 @@ public class AddScoreCommand extends Command {
 //    protected static final String invalid = "\"Invalid request\"";
 //    protected static final String ok = "\"Ok\"";
     private final CourseDAO courseDAO;
-
+    private CourseAdapter adapter = new CourseFromRequest();
     public AddScoreCommand(CourseDAO courseDAO) {
         this.courseDAO = courseDAO;
     }
 
     @Override
     public Object execute(Request request, Response response)  {
-
         try {
-            CourseFromRequest adapter = new CourseFromRequest(request);
-            Course scoredCourse = adapter.transform();
+//            CourseFromRequest adapter = new CourseFromRequest();
+            Course scoredCourse = adapter.transform(request);
             courseDAO.add(scoredCourse);
         }
         catch (Exception e){

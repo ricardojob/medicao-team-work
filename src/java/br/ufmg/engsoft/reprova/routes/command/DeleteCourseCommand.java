@@ -2,24 +2,22 @@ package br.ufmg.engsoft.reprova.routes.command;
 
 import br.ufmg.engsoft.reprova.database.CourseDAO;
 import br.ufmg.engsoft.reprova.model.Course;
-import br.ufmg.engsoft.reprova.model.CourseFactory;
 import br.ufmg.engsoft.reprova.routes.Command;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import br.ufmg.engsoft.reprova.routes.CourseAdapter;
+import br.ufmg.engsoft.reprova.routes.mapper.CourseJsonRequest;
 import spark.Request;
 import spark.Response;
 
 public class DeleteCourseCommand extends Command {
     private final CourseDAO courseDAO;
 //    protected static final String ok = "\"Ok\"";
-
+private CourseAdapter adapter = new CourseJsonRequest();
     public DeleteCourseCommand(CourseDAO courseDAO) {
         this.courseDAO = courseDAO;
     }
 
     public Object execute(Request request, Response response) {
-        CourseJsonRequest adapter = new CourseJsonRequest(request);
-        Course course = adapter.transform();
+        Course course = adapter.transform(request);
         courseDAO.delete(course);
         return ok;
     }
