@@ -3,33 +3,14 @@ package br.ufmg.engsoft.reprova.tests.mime.json;
 import br.ufmg.engsoft.reprova.Configuration;
 import br.ufmg.engsoft.reprova.mime.json.Json;
 import br.ufmg.engsoft.reprova.model.*;
-import br.ufmg.engsoft.reprova.model.variability.CoarseGrainedCourseFactory;
-import br.ufmg.engsoft.reprova.model.variability.FineGrainedCourseFactory;
 import org.junit.jupiter.api.Test;
 
-import java.util.AbstractMap;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class JsonTest {
-
-    public static <K, V> Map.Entry<K, V> entry(K key, V value) {
-        return new AbstractMap.SimpleEntry<>(key, value);
-    }
-
-    public static <K, U> Collector<Map.Entry<K, U>, ?, Map<K, U>> entriesToMap() {
-        return Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue());
-    }
-
-    public static <K, U> Collector<Map.Entry<K, U>, ?, ConcurrentMap<K, U>> entriesToConcurrentMap() {
-        return Collectors.toConcurrentMap((e) -> e.getKey(), (e) -> e.getValue());
-    }
 
     /**
      * Rendering then parsing should produce an equivalent Question object.
@@ -50,13 +31,7 @@ public class JsonTest {
                 .isPrivate(false)
                 .build();
 
-        Json formatter = new Json();
-
-        String json = formatter.render(question);
-
-        Question questionCopy = formatter
-                .parse(json, Question.Builder.class)
-                .build();
+        Question questionCopy = getQuestion(question);
 
         assertEquals(question, questionCopy);
     }
@@ -82,6 +57,12 @@ public class JsonTest {
                 .isPrivate(false)
                 .build();
 
+        Question questionCopy = getQuestion(question);
+
+        assertEquals(question, questionCopy);
+    }
+
+    private Question getQuestion(Question question) {
         Json formatter = new Json();
 
         String json = formatter.render(question);
@@ -89,8 +70,7 @@ public class JsonTest {
         Question questionCopy = formatter
                 .parse(json, Question.Builder.class)
                 .build();
-
-        assertEquals(question, questionCopy);
+        return questionCopy;
     }
 
     /**
@@ -118,9 +98,9 @@ public class JsonTest {
     @Test
     void testCourseSerialization_FineGrained() {
         Configuration.setFineGrained();
+        CourseFactory factory = CourseFactory.create();
         Student s1 = new Student("id1", 50.0f);
         Student s2 = new Student("id2", 49.0f);
-        CourseFactory factory = CourseFactory.create();
         Course course = factory.createCourse(2019, Course.Reference._1, "Software Reuse", Arrays.asList(s1, s2));
 
         Json formatter = new Json();
