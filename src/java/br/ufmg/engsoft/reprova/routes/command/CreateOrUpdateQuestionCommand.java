@@ -4,14 +4,11 @@ import br.ufmg.engsoft.reprova.database.QuestionsDAO;
 import br.ufmg.engsoft.reprova.mime.json.Json;
 import br.ufmg.engsoft.reprova.model.Question;
 import br.ufmg.engsoft.reprova.routes.Command;
-import br.ufmg.engsoft.reprova.routes.api.Questions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 
 public class CreateOrUpdateQuestionCommand extends Command {
-    protected static final Logger logger = LoggerFactory.getLogger(Questions.class);
+//    protected static final Logger logger = LoggerFactory.getLogger(Questions.class);
 //    protected static final String token = System.getenv("REPROVA_TOKEN");
 //    protected static final String unauthorised = "\"Unauthorised\"";
 //    protected static final String invalid = "\"Invalid request\"";
