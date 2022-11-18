@@ -42,16 +42,7 @@ public class CourseXMLTest {
                 new StringReader(xml)
         );
 
-        //        xstream.aliasType("course", Course.class);
-//        XStream xstream = new XStream(new StaxDriver());
-//        xstream.alias("student", Student.class);
         this.xstream.alias("course", FineGrainedCourse.class);
-//        xstream.addImplicitCollection(FineGrainedCourse.class, "students");
-//        xstream .addPermission(NoTypePermission.NONE); //forbid everything
-//        xstream .addPermission(NullPermission.NULL);   // allow "null"
-//        xstream .addPermission(PrimitiveTypePermission.PRIMITIVES); // allow primitive types
-
-//        XStream xstream = configureXStream();
         this.xstream.addPermission(AnyTypePermission.ANY);
         Object expected =  this.xstream.fromXML(buffer);
 
@@ -96,7 +87,6 @@ public class CourseXMLTest {
         CourseFactory courseFactory = CourseFactory.create();
         Course course = courseFactory.createCourse(year, reference, courseName, Arrays.asList(student1));
         String xml = xstream.toXML(course);
-//        String xml = getXml(course);
 
         String expected = "<?xml version=\"1.0\" ?>" +
                 "<course><year>2022</year>" +
@@ -104,7 +94,6 @@ public class CourseXMLTest {
                 "<courseName>Software Reuse</courseName>" +
                 "<student><id>id1</id><score>50.0</score></student>" +
                 "</course>";
-//                System.out.println(xml);
         assertEquals(expected,xml);
     }
 
