@@ -3,14 +3,14 @@ package br.ufmg.engsoft.reprova.database;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import br.ufmg.engsoft.reprova.model.Course;
+//import br.ufmg.engsoft.reprova.model.Course;
 import br.ufmg.engsoft.reprova.routes.mapper.QuestionFromDocument;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Projections.exclude;
-import static com.mongodb.client.model.Projections.fields;
+//import static com.mongodb.client.model.Projections.exclude;
+//import static com.mongodb.client.model.Projections.fields;
 
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
@@ -106,15 +106,18 @@ public class QuestionsDAO {
     if (id == null)
       throw new IllegalArgumentException("id mustn't be null");
 
-    Question question = this.collection
-      .find(eq(new ObjectId(id)))
-      .map(adapter::parseDoc)
-      .first();
-
+    Question question = getFirst(id);
     if (question == null)
       logger.info("No such question " + id);
 
     return question;
+  }
+
+  private Question getFirst(String id) {
+    return this.collection
+            .find(eq(new ObjectId(id)))
+            .map(adapter::parseDoc)
+            .first();
   }
 
 
@@ -141,14 +144,19 @@ public class QuestionsDAO {
       ? this.collection.find()
       : this.collection.find(and(filters));
 
-    ArrayList<Question> result = new ArrayList<Question>();
-
-    doc.projection(fields(exclude("statement")))
-      .map(adapter::parseDoc)
-      .into(result);
+    ArrayList<Question> result = new MapperIterableToList().getQuestions(doc);
 
     return result;
   }
+
+//  private ArrayList<Question> getQuestions(FindIterable<Document> doc) {
+//    ArrayList<Question> result = new ArrayList<Question>();
+//
+//    doc.projection(fields(exclude("statement")))
+//      .map(adapter::parseDoc)
+//      .into(result);
+//    return result;
+//  }
 
 
   /**
@@ -162,13 +170,13 @@ public class QuestionsDAO {
     if (question == null)
       throw new IllegalArgumentException("question mustn't be null");
 
-    List<Course> courses = question.courses;
+//    List<Course> courses = question.courses;
 
     Document doc = new Document()
       .append("theme", question.theme)
       .append("description", question.description)
       .append("statement", question.statement)
-      .append("courses", courses)
+      .append("courses", question.courses)
       .append("pvt", question.isPrivate);
 
     String id = question.id;
