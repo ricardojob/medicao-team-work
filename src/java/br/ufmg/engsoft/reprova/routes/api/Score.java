@@ -2,7 +2,6 @@ package br.ufmg.engsoft.reprova.routes.api;
 
 import br.ufmg.engsoft.reprova.database.CourseDAO;
 import br.ufmg.engsoft.reprova.mime.json.Json;
-import br.ufmg.engsoft.reprova.routes.Command;
 import br.ufmg.engsoft.reprova.routes.command.AddScoreCommand;
 import br.ufmg.engsoft.reprova.routes.command.DeleteCourseCommand;
 import br.ufmg.engsoft.reprova.routes.command.FindCourseCommand;
@@ -27,7 +26,7 @@ public class Score {
 
     protected final CourseDAO courseDAO;
 
-    private Command command;
+//    private Command command;
 
     /**
      * Instantiate the questions endpoint.

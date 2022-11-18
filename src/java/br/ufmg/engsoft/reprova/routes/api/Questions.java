@@ -45,7 +45,7 @@ public class Questions {
    * DAO for Question.
    */
   protected final QuestionsDAO questionsDAO;
-  private Command command;
+//  private Command command;
 
 
   /**
