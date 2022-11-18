@@ -1,27 +1,14 @@
 package br.ufmg.engsoft.reprova.database;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-//import br.ufmg.engsoft.reprova.model.Course;
-import br.ufmg.engsoft.reprova.routes.mapper.QuestionFromDocument;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.eq;
-//import static com.mongodb.client.model.Projections.exclude;
-//import static com.mongodb.client.model.Projections.fields;
-
-import com.mongodb.client.result.UpdateResult;
-import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
-
+import br.ufmg.engsoft.reprova.mime.json.Json;
+import br.ufmg.engsoft.reprova.model.Question;
+//import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import br.ufmg.engsoft.reprova.mime.json.Json;
-import br.ufmg.engsoft.reprova.model.Question;
+//import java.util.ArrayList;
+import java.util.Collection;
+//import java.util.List;
 
 
 /**
@@ -37,14 +24,13 @@ public class QuestionsDAO {
    * Json formatter.
    */
 //  protected  Json json;
-  protected QuestionFromDocument adapter;
+//  protected QuestionFromDocument adapter;
 
-  /**
-   * Questions collection.
-   */
-  protected  MongoCollection<Document> collection;
-
-
+//  /**
+//   * Questions collection.
+//   */
+//  protected  MongoCollection<Document> collection;
+  protected  MapperQuestionsMongo collection;
 
   /**
    * Basic constructor.
@@ -59,41 +45,11 @@ public class QuestionsDAO {
     if (json == null)
       throw new IllegalArgumentException("json mustn't be null");
 
-    this.collection = db.getCollection("questions");
-
-    this.adapter = new QuestionFromDocument(json);
+    this.collection = new MapperQuestionsMongo(
+            db.getCollection("questions"), json
+    );
+//    this.adapter = new QuestionFromDocument(json);
   }
-
-
-
-  /**
-   * Parse the given document.
-   * @param document  the question document, mustn't be null
-   * @throws IllegalArgumentException  if any parameter is null
-   * @throws IllegalArgumentException  if the given document is an invalid Question
-   */
-//  protected Question parseDoc(Document document) {
-//    if (document == null)
-//      throw new IllegalArgumentException("document mustn't be null");
-//
-//    String doc = document.toJson();
-//
-//    logger.info("Fetched question: " + doc);
-//
-//    try {
-//      Question question = json
-//        .parse(doc, Question.Builder.class)
-//        .build();
-//
-//      logger.info("Parsed question: " + question);
-//
-//      return question;
-//    }
-//    catch (Exception e) {
-//      logger.error("Invalid document in database!", e);
-//      throw new IllegalArgumentException(e);
-//    }
-//  }
 
 
   /**
@@ -106,20 +62,11 @@ public class QuestionsDAO {
     if (id == null)
       throw new IllegalArgumentException("id mustn't be null");
 
-    Question question = getFirst(id);
+    Question question = this.collection.getFirst(id);
     if (question == null)
       logger.info("No such question " + id);
-
     return question;
   }
-
-  private Question getFirst(String id) {
-    return this.collection
-            .find(eq(new ObjectId(id)))
-            .map(adapter::parseDoc)
-            .first();
-  }
-
 
   /**
    * List all the questions that match the given non-null parameters.
@@ -131,33 +78,19 @@ public class QuestionsDAO {
    * @throws IllegalArgumentException  if there is an invalid Question
    */
   public Collection<Question> list(String theme, Boolean pvt) {
-    List<Bson> filters =
-      Arrays.asList(
-        theme == null ? null : eq("theme", theme),
-        pvt == null ? null : eq("pvt", pvt)
-      )
-      .stream()
-      .filter(Objects::nonNull) // mongo won't allow null filters.
-      .collect(Collectors.toList());
+//    List<Bson> filters =
+//      Arrays.asList(
+//        theme == null ? null : eq("theme", theme),
+//        pvt == null ? null : eq("pvt", pvt)
+//      )
+//      .stream()
+//      .filter(Objects::nonNull) // mongo won't allow null filters.
+//      .collect(Collectors.toList());
 
-    FindIterable<Document> doc = filters.isEmpty() // mongo won't take null as a filter.
-      ? this.collection.find()
-      : this.collection.find(and(filters));
-
-    ArrayList<Question> result = new MapperIterableToList().getQuestions(doc);
+    Collection<Question> result = this.collection.getQuestions(theme, pvt);
 
     return result;
   }
-
-//  private ArrayList<Question> getQuestions(FindIterable<Document> doc) {
-//    ArrayList<Question> result = new ArrayList<Question>();
-//
-//    doc.projection(fields(exclude("statement")))
-//      .map(adapter::parseDoc)
-//      .into(result);
-//    return result;
-//  }
-
 
   /**
    * Adds or updates the given question in the database.
@@ -172,29 +105,20 @@ public class QuestionsDAO {
 
 //    List<Course> courses = question.courses;
 
-    Document doc = new Document()
-      .append("theme", question.theme)
-      .append("description", question.description)
-      .append("statement", question.statement)
-      .append("courses", question.courses)
-      .append("pvt", question.isPrivate);
-
-    String id = question.id;
-    if (id != null) {
-      UpdateResult result = this.collection.replaceOne(
-        eq(new ObjectId(id)),
-        doc
-      );
-
-      if (!result.wasAcknowledged()) {
-        logger.warn("Failed to replace question " + id);
-        return false;
-      }
+//    Document doc = new Document()
+//      .append("theme", question.theme)
+//      .append("description", question.description)
+//      .append("statement", question.statement)
+//      .append("courses", question.courses)
+//      .append("pvt", question.isPrivate);
+//
+//    String id = question.id;
+    if (question.id != null) {
+      if (extracted(question)) return false;
+    }else {
+      this.collection.insertOne(question);
     }
-    else
-      this.collection.insertOne(doc);
-
-    logger.info("Stored question " + doc.get("_id"));
+    logger.info("Stored question ");
 
     return true;
   }
@@ -210,9 +134,7 @@ public class QuestionsDAO {
     if (id == null)
       throw new IllegalArgumentException("id mustn't be null");
 
-    boolean result = this.collection.deleteOne(
-      eq(new ObjectId(id))
-    ).wasAcknowledged();
+    boolean result = this.collection.deleteOne(id);
 
     if (result)
       logger.info("Deleted question " + id);
@@ -220,5 +142,21 @@ public class QuestionsDAO {
       logger.warn("Failed to delete question " + id);
 
     return result;
+  }
+
+//  private Question getFirst(String id) {
+//    return this.collection
+//            .find(eq(new ObjectId(id)))
+//            .map(adapter::parseDoc)
+//            .first();
+//  }
+
+  private boolean extracted(Question question) {
+    boolean result = this.collection.replaceOne(question);
+    if (!result) {
+      logger.warn("Failed to replace question " + question.id);
+      return true;
+    }
+    return false;
   }
 }
