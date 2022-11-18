@@ -46,24 +46,13 @@ public class CourseXMLTest {
         this.xstream.addPermission(AnyTypePermission.ANY);
         Object expected =  this.xstream.fromXML(buffer);
 
-        String courseName = "Software Reuse";
-        Integer year = 2022;
-        Integer referenceInt = 2;
-        Course.Reference reference = Course.Reference.fromInt(referenceInt);
-        CourseFactory courseFactory = CourseFactory.create();
-        Course course = courseFactory.createCourse(year, reference, courseName);
+        Course course = createCourse();
 
         assertEquals(expected,course);
     }
     @Test
     void testCreateWithoutStudents() {
-        String courseName = "Software Reuse";
-        Integer year = 2022;
-        Integer referenceInt = 2;
-        Course.Reference reference = Course.Reference.fromInt(referenceInt);
-        CourseFactory courseFactory = CourseFactory.create();
-        Course course = courseFactory.createCourse(year, reference, courseName);
-
+        Course course = createCourse();
         String xml = xstream.toXML(course);
 
         String expected = "<?xml version=\"1.0\" ?>" +
@@ -95,6 +84,16 @@ public class CourseXMLTest {
                 "<student><id>id1</id><score>50.0</score></student>" +
                 "</course>";
         assertEquals(expected,xml);
+    }
+
+    private Course createCourse() {
+        String courseName = "Software Reuse";
+        Integer year = 2022;
+        Integer referenceInt = 2;
+        Course.Reference reference = Course.Reference.fromInt(referenceInt);
+        CourseFactory courseFactory = CourseFactory.create();
+        Course course = courseFactory.createCourse(year, reference, courseName);
+        return course;
     }
 
 }

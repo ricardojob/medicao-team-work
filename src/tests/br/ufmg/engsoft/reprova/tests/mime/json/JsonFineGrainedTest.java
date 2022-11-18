@@ -37,9 +37,6 @@ public class JsonFineGrainedTest extends JsonAbstractTest{
         assertEquals(question, questionCopy);
     }
 
-
-
-
     /**
      * Rendering then parsing should produce an equivalent Course object.
      */
@@ -50,13 +47,6 @@ public class JsonFineGrainedTest extends JsonAbstractTest{
         Student s1 = new Student("id1", 50.0f);
         Student s2 = new Student("id2", 49.0f);
         Course course = factory.createCourse(2019, Course.Reference._1, "Software Reuse", Arrays.asList(s1, s2));
-
-//        Json formatter = new Json();
-//
-//        String json = formatter.render(course);
-//
-//        Course courseCopy = formatter
-//                .parse(json, FineGrainedCourse.class);
         Course courseCopy = parse(course, FineGrainedCourse.class);
         assertEquals(course, courseCopy);
     }

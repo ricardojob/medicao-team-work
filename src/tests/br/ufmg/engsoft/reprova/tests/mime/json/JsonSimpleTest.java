@@ -1,11 +1,8 @@
 package br.ufmg.engsoft.reprova.tests.mime.json;
 
-import br.ufmg.engsoft.reprova.Configuration;
 import br.ufmg.engsoft.reprova.mime.json.Json;
-import br.ufmg.engsoft.reprova.model.*;
+import br.ufmg.engsoft.reprova.model.Student;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
