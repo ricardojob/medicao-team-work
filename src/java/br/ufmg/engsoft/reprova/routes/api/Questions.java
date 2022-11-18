@@ -1,5 +1,9 @@
 package br.ufmg.engsoft.reprova.routes.api;
 
+import br.ufmg.engsoft.reprova.routes.Command;
+import br.ufmg.engsoft.reprova.routes.command.CreateOrUpdateQuestionCommand;
+import br.ufmg.engsoft.reprova.routes.command.DeleteQuestionCommand;
+import br.ufmg.engsoft.reprova.routes.command.FindQuestionsCommand;
 import spark.Spark;
 import spark.Request;
 import spark.Response;
@@ -26,14 +30,14 @@ public class Questions {
   /**
    * Access token.
    */
-  protected static final String token = System.getenv("REPROVA_TOKEN");
+//  protected static final String token = System.getenv("REPROVA_TOKEN");
 
   /**
    * Messages.
    */
-  protected static final String unauthorised = "\"Unauthorised\"";
-  protected static final String invalid = "\"Invalid request\"";
-  protected static final String ok = "\"Ok\"";
+//  protected static final String unauthorised = "\"Unauthorised\"";
+//  protected static final String invalid = "\"Invalid request\"";
+//  protected static final String ok = "\"Ok\"";
 
 
   /**
@@ -44,7 +48,7 @@ public class Questions {
    * DAO for Question.
    */
   protected final QuestionsDAO questionsDAO;
-
+  private Command command;
 
 
   /**
@@ -65,8 +69,6 @@ public class Questions {
     this.questionsDAO = questionsDAO;
   }
 
-
-
   /**
    * Install the endpoint in Spark.
    * Methods:
@@ -78,7 +80,6 @@ public class Questions {
     Spark.get("/api/questions", this::get);
     Spark.post("/api/questions", this::post);
     Spark.delete("/api/questions", this::delete);
-
     logger.info("Setup /api/questions.");
   }
 
@@ -86,9 +87,9 @@ public class Questions {
   /**
    * Check if the given token is authorised.
    */
-  protected static boolean authorised(String token) {
-    return Questions.token.equals(token);
-  }
+//  protected static boolean authorised(String token) {
+//    return Questions.token.equals(token);
+//  }
 
 
   /**
@@ -96,69 +97,71 @@ public class Questions {
    * provided.
    */
   protected Object get(Request request, Response response) {
-    logger.info("Received questions get:"); //logger, tracking
-
-    String id = request.queryParams("id");
-    boolean auth = authorised(request.queryParams("token")); //point aspectj
-    //user:pass:type ->  hash
-    return id == null
-      ? this.get(request, response, auth)
-      : this.get(request, response, id, auth);
+    this.command = new FindQuestionsCommand(questionsDAO, json);
+    return this.command.execute(request, response);
+//    logger.info("Received questions get:"); //logger, tracking
+//
+//    String id = request.queryParams("id");
+//    boolean auth = authorised(request.queryParams("token")); //point aspectj
+//    //user:pass:type ->  hash
+//    return id == null
+//      ? this.get(request, response, auth)
+//      : this.get(request, response, id, auth);
   }
 
   /**
    * Get id endpoint: fetch the specified question from the database.
    * If not authorised, and the given question is private, returns an error message.
    */
-  protected Object get(Request request, Response response, String id, boolean auth) {
-    if (id == null)
-      throw new IllegalArgumentException("id mustn't be null");
-
-    response.type("application/json");
-
-    logger.info("Fetching question " + id);
-
-    Question question = questionsDAO.get(id);
-
-    if (question == null) {
-      logger.error("Invalid request!");
-      response.status(400);
-      return invalid;
-    }
-
-    if (question.isPrivate && !auth) {
-      logger.info("Unauthorised token: " + token);
-      response.status(403);
-      return unauthorised;
-    }
-
-    logger.info("Done. Responding...");
-
-    response.status(200);
-
-    return json.render(question);
-  }
-
-  /**
-   * Get all endpoint: fetch all questions from the database.
-   * If not authorised, fetches only public questions.
-   */
-  protected Object get(Request request, Response response, boolean auth) {
-    response.type("application/json");
-
-    logger.info("Fetching questions.");
-
-    Collection<Question> questions = questionsDAO.list(
-      null, // theme filtering is not implemented in this endpoint.
-      auth ? null : false
-    );
-
-    logger.info("Done. Responding...");
-
-    response.status(200);
-
-    return json.render(questions);
-  }
+//  protected Object get(Request request, Response response, String id, boolean auth) {
+//    if (id == null)
+//      throw new IllegalArgumentException("id mustn't be null");
+//
+//    response.type("application/json");
+//
+//    logger.info("Fetching question " + id);
+//
+//    Question question = questionsDAO.get(id);
+//
+//    if (question == null) {
+//      logger.error("Invalid request!");
+//      response.status(400);
+//      return invalid;
+//    }
+//
+//    if (question.isPrivate && !auth) {
+//      logger.info("Unauthorised token: " + token);
+//      response.status(403);
+//      return unauthorised;
+//    }
+//
+//    logger.info("Done. Responding...");
+//
+//    response.status(200);
+//
+//    return json.render(question);
+//  }
+//
+//  /**
+//   * Get all endpoint: fetch all questions from the database.
+//   * If not authorised, fetches only public questions.
+//   */
+//  protected Object get(Request request, Response response, boolean auth) {
+//    response.type("application/json");
+//
+//    logger.info("Fetching questions.");
+//
+//    Collection<Question> questions = questionsDAO.list(
+//      null, // theme filtering is not implemented in this endpoint.
+//      auth ? null : false
+//    );
+//
+//    logger.info("Done. Responding...");
+//
+//    response.status(200);
+//
+//    return json.render(questions);
+//  }
 
 
   /**
@@ -169,46 +172,48 @@ public class Questions {
    * This endpoint is for authorized access only.
    */
   protected Object post(Request request, Response response) {
-    String body = request.body();
-
-    logger.info("Received questions post:" + body);
-
-    response.type("application/json");
-
-    String token = request.queryParams("token");
-
-    if (!authorised(token)) {
-      logger.info("Unauthorised token: " + token);
-      response.status(403);
-      return unauthorised;
-    }
-
-    Question question;
-    try {
-      question = json
-        .parse(body, Question.Builder.class)
-        .build();
-    }
-    catch (Exception e) {
-      logger.error("Invalid request payload!", e);
-      response.status(400);
-      return invalid;
-    }
-
-    logger.info("Parsed " + question.toString());
-
-    logger.info("Adding question.");
-
-    boolean success = questionsDAO.add(question);
-
-    response.status(
-       success ? 200
-               : 400
-    );
-
-    logger.info("Done. Responding...");
-
-    return ok;
+    this.command = new CreateOrUpdateQuestionCommand(questionsDAO, json);
+    return this.command.execute(request, response);
+//    String body = request.body();
+//
+//    logger.info("Received questions post:" + body);
+//
+//    response.type("application/json");
+//
+//    String token = request.queryParams("token");
+//
+//    if (!authorised(token)) {
+//      logger.info("Unauthorised token: " + token);
+//      response.status(403);
+//      return unauthorised;
+//    }
+//
+//    Question question;
+//    try {
+//      question = json
+//        .parse(body, Question.Builder.class)
+//        .build();
+//    }
+//    catch (Exception e) {
+//      logger.error("Invalid request payload!", e);
+//      response.status(400);
+//      return invalid;
+//    }
+//
+//    logger.info("Parsed " + question.toString());
+//
+//    logger.info("Adding question.");
+//
+//    boolean success = questionsDAO.add(question);
+//
+//    response.status(
+//       success ? 200
+//               : 400
+//    );
+//
+//    logger.info("Done. Responding...");
+//
+//    return ok;
   }
 
 
@@ -218,36 +223,7 @@ public class Questions {
    * This endpoint is for authorized access only.
    */
   protected Object delete(Request request, Response response) {
-    logger.info("Received questions delete:");
-
-    response.type("application/json");
-
-    String id = request.queryParams("id");
-    String token = request.queryParams("token");
-
-    if (!authorised(token)) {
-      logger.info("Unauthorised token: " + token);
-      response.status(403);
-      return unauthorised;
-    }
-
-    if (id == null) {
-      logger.error("Invalid request!");
-      response.status(400);
-      return invalid;
-    }
-
-    logger.info("Deleting question " + id);
-
-    boolean success = questionsDAO.remove(id);
-
-    logger.info("Done. Responding...");
-
-    response.status(
-      success ? 200
-              : 400
-    );
-
-    return ok;
+    this.command = new DeleteQuestionCommand(questionsDAO);
+    return this.command.execute(request, response);
   }
 }
