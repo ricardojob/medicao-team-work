@@ -5,14 +5,11 @@ import br.ufmg.engsoft.reprova.routes.command.CreateOrUpdateQuestionCommand;
 import br.ufmg.engsoft.reprova.routes.command.DeleteQuestionCommand;
 import br.ufmg.engsoft.reprova.routes.command.FindQuestionsCommand;
 import spark.Spark;
-import spark.Request;
-import spark.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import br.ufmg.engsoft.reprova.database.QuestionsDAO;
-import br.ufmg.engsoft.reprova.model.Question;
 import br.ufmg.engsoft.reprova.mime.json.Json;
 
 import java.util.Collection;
@@ -77,9 +74,9 @@ public class Questions {
    * - delete
    */
   public void setup() {
-    Spark.get("/api/questions", this::get);
-    Spark.post("/api/questions", this::post);
-    Spark.delete("/api/questions", this::delete);
+    Spark.get("/api/questions", new FindQuestionsCommand(questionsDAO,json));
+    Spark.post("/api/questions", new CreateOrUpdateQuestionCommand(questionsDAO,json));
+    Spark.delete("/api/questions", new DeleteQuestionCommand(questionsDAO));
     logger.info("Setup /api/questions.");
   }
 
@@ -96,18 +93,18 @@ public class Questions {
    * Get endpoint: lists all questions, or a single question if a 'id' query parameter is
    * provided.
    */
-  protected Object get(Request request, Response response) {
-    this.command = new FindQuestionsCommand(questionsDAO, json);
-    return this.command.execute(request, response);
-//    logger.info("Received questions get:"); //logger, tracking
-//
-//    String id = request.queryParams("id");
-//    boolean auth = authorised(request.queryParams("token")); //point aspectj
-//    //user:pass:type ->  hash
-//    return id == null
-//      ? this.get(request, response, auth)
-//      : this.get(request, response, id, auth);
-  }
+//  protected Object get(Request request, Response response) {
+//    this.command = new FindQuestionsCommand(questionsDAO, json);
+//    return this.command.execute(request, response);
+////    logger.info("Received questions get:"); //logger, tracking
+////
+////    String id = request.queryParams("id");
+////    boolean auth = authorised(request.queryParams("token")); //point aspectj
+////    //user:pass:type ->  hash
+////    return id == null
+////      ? this.get(request, response, auth)
+////      : this.get(request, response, id, auth);
+//  }
 
   /**
    * Get id endpoint: fetch the specified question from the database.
@@ -171,50 +168,50 @@ public class Questions {
    * Otherwise, the given question is added as a new question in the database.
    * This endpoint is for authorized access only.
    */
-  protected Object post(Request request, Response response) {
-    this.command = new CreateOrUpdateQuestionCommand(questionsDAO, json);
-    return this.command.execute(request, response);
-//    String body = request.body();
-//
-//    logger.info("Received questions post:" + body);
-//
-//    response.type("application/json");
-//
-//    String token = request.queryParams("token");
-//
-//    if (!authorised(token)) {
-//      logger.info("Unauthorised token: " + token);
-//      response.status(403);
-//      return unauthorised;
-//    }
-//
-//    Question question;
-//    try {
-//      question = json
-//        .parse(body, Question.Builder.class)
-//        .build();
-//    }
-//    catch (Exception e) {
-//      logger.error("Invalid request payload!", e);
-//      response.status(400);
-//      return invalid;
-//    }
-//
-//    logger.info("Parsed " + question.toString());
-//
-//    logger.info("Adding question.");
-//
-//    boolean success = questionsDAO.add(question);
-//
-//    response.status(
-//       success ? 200
-//               : 400
-//    );
-//
-//    logger.info("Done. Responding...");
-//
-//    return ok;
-  }
+//  protected Object post(Request request, Response response) {
+//    this.command = new CreateOrUpdateQuestionCommand(questionsDAO, json);
+//    return this.command.execute(request, response);
+////    String body = request.body();
+////
+////    logger.info("Received questions post:" + body);
+////
+////    response.type("application/json");
+////
+////    String token = request.queryParams("token");
+////
+////    if (!authorised(token)) {
+////      logger.info("Unauthorised token: " + token);
+////      response.status(403);
+////      return unauthorised;
+////    }
+////
+////    Question question;
+////    try {
+////      question = json
+////        .parse(body, Question.Builder.class)
+////        .build();
+////    }
+////    catch (Exception e) {
+////      logger.error("Invalid request payload!", e);
+////      response.status(400);
+////      return invalid;
+////    }
+////
+////    logger.info("Parsed " + question.toString());
+////
+////    logger.info("Adding question.");
+////
+////    boolean success = questionsDAO.add(question);
+////
+////    response.status(
+////       success ? 200
+////               : 400
+////    );
+////
+////    logger.info("Done. Responding...");
+////
+////    return ok;
+//  }
 
 
   /**
@@ -222,8 +219,8 @@ public class Questions {
    * The question's id must be supplied through the 'id' query parameter.
    * This endpoint is for authorized access only.
    */
-  protected Object delete(Request request, Response response) {
-    this.command = new DeleteQuestionCommand(questionsDAO);
-    return this.command.execute(request, response);
-  }
+//  protected Object delete(Request request, Response response) {
+//    this.command = new DeleteQuestionCommand(questionsDAO);
+//    return this.command.execute(request, response);
+//  }
 }

@@ -8,8 +8,6 @@ import br.ufmg.engsoft.reprova.routes.command.DeleteCourseCommand;
 import br.ufmg.engsoft.reprova.routes.command.FindCourseCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.Request;
-import spark.Response;
 import spark.Spark;
 
 public class Score {
@@ -55,9 +53,9 @@ public class Score {
      * - delete
      */
     public void setup() {
-        Spark.get("/api/score", this::get);
-        Spark.post("/api/score", this::post);
-        Spark.delete("/api/score", this::delete);
+        Spark.get("/api/score", new FindCourseCommand(courseDAO));
+        Spark.post("/api/score", new AddScoreCommand(courseDAO));
+        Spark.delete("/api/score", new DeleteCourseCommand(courseDAO));
 //        Spark.get("/api/score", (request, response) -> {
 //            this.command = new FindCourseCommand(courseDAO);
 //            return this.command.execute(request, response);
@@ -70,17 +68,17 @@ public class Score {
      * If the course already exist in the database, the operation is an update.
      * Otherwise, the given course is added as a new one in the database.
      */
-    protected Object post(Request request, Response response) {
-        this.command = new AddScoreCommand(courseDAO);
-        return this.command.execute(request, response);
-    }
+//    protected Object post(Request request, Response response) {
+//        this.command = new AddScoreCommand(courseDAO);
+//        return this.command.execute(request, response);
+//    }
     /**
      * Get endpoint: fetch the specified scored course from the database.
      */
-    protected Object get(Request request, Response response){
-        this.command = new FindCourseCommand(courseDAO);
-        return this.command.execute(request, response);
-    }
+//    protected Object get(Request request, Response response){
+//        this.command = new FindCourseCommand(courseDAO);
+//        return this.command.execute(request, response);
+//    }
 
 //    private Course getCourseFromRequest(Request request) {
 //        String body = request.body();
@@ -99,8 +97,8 @@ public class Score {
      * Delete endpoint: remove a course from the database.
      * The question's info must be provided in the request
      */
-    protected Object delete(Request request, Response response) {
-        this.command = new DeleteCourseCommand(courseDAO);
-        return this.command.execute(request, response);
-    }
+//    protected Object delete(Request request, Response response) {
+//        this.command = new DeleteCourseCommand(courseDAO);
+//        return this.command.execute(request, response);
+//    }
 }

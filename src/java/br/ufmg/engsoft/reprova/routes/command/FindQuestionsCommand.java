@@ -4,7 +4,6 @@ import br.ufmg.engsoft.reprova.database.QuestionsDAO;
 import br.ufmg.engsoft.reprova.mime.json.Json;
 import br.ufmg.engsoft.reprova.model.Question;
 import br.ufmg.engsoft.reprova.routes.Command;
-import br.ufmg.engsoft.reprova.routes.api.Questions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Request;
@@ -14,10 +13,10 @@ import java.util.Collection;
 
 public class FindQuestionsCommand extends Command {
     protected static final Logger logger = LoggerFactory.getLogger(FindQuestionsCommand.class);
-    protected static final String token = System.getenv("REPROVA_TOKEN");
-    protected static final String unauthorised = "\"Unauthorised\"";
-    protected static final String invalid = "\"Invalid request\"";
-    protected static final String ok = "\"Ok\"";
+//    protected static final String token = System.getenv("REPROVA_TOKEN");
+//    protected static final String unauthorised = "\"Unauthorised\"";
+//    protected static final String invalid = "\"Invalid request\"";
+//    protected static final String ok = "\"Ok\"";
     private final QuestionsDAO questionsDAO;
     private final Json json;
 
@@ -37,9 +36,9 @@ public class FindQuestionsCommand extends Command {
                 ? this.get(request, response, auth)
                 : this.get(request, response, id, auth);
     }
-      protected static boolean authorised(String token) {
-     return FindQuestionsCommand.token.equals(token);
-  }
+//      protected static boolean authorised(String token) {
+//     return FindQuestionsCommand.token.equals(token);
+//  }
     protected Object get(Request request, Response response, String id, boolean auth) {
         if (id == null)
             throw new IllegalArgumentException("id mustn't be null");

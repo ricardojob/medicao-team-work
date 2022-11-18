@@ -11,7 +11,7 @@ import spark.Response;
 
 public class DeleteCourseCommand extends Command {
     private final CourseDAO courseDAO;
-    protected static final String ok = "\"Ok\"";
+//    protected static final String ok = "\"Ok\"";
 
     public DeleteCourseCommand(CourseDAO courseDAO) {
         this.courseDAO = courseDAO;

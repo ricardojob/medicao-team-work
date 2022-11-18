@@ -27,8 +27,8 @@ public class AddScoreCommand extends Command {
     /**
      * Messages.
      */
-    protected static final String invalid = "\"Invalid request\"";
-    protected static final String ok = "\"Ok\"";
+//    protected static final String invalid = "\"Invalid request\"";
+//    protected static final String ok = "\"Ok\"";
     private final CourseDAO courseDAO;
 
     public AddScoreCommand(CourseDAO courseDAO) {

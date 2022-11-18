@@ -12,10 +12,10 @@ import spark.Response;
 
 public class CreateOrUpdateQuestionCommand extends Command {
     protected static final Logger logger = LoggerFactory.getLogger(Questions.class);
-    protected static final String token = System.getenv("REPROVA_TOKEN");
-    protected static final String unauthorised = "\"Unauthorised\"";
-    protected static final String invalid = "\"Invalid request\"";
-    protected static final String ok = "\"Ok\"";
+//    protected static final String token = System.getenv("REPROVA_TOKEN");
+//    protected static final String unauthorised = "\"Unauthorised\"";
+//    protected static final String invalid = "\"Invalid request\"";
+//    protected static final String ok = "\"Ok\"";
 
     private final QuestionsDAO questionsDAO;
     protected final Json json;
@@ -63,7 +63,5 @@ public class CreateOrUpdateQuestionCommand extends Command {
         logger.info("Done. Responding...");
         return ok;
     }
-    protected static boolean authorised(String token) {
-        return CreateOrUpdateQuestionCommand.token.equals(token);
-    }
+
 }

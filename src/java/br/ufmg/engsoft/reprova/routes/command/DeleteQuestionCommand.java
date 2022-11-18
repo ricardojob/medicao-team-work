@@ -11,10 +11,10 @@ import spark.Response;
 public class DeleteQuestionCommand extends Command {
 
     protected static final Logger logger = LoggerFactory.getLogger(Questions.class);
-    protected static final String token = System.getenv("REPROVA_TOKEN");
-    protected static final String unauthorised = "\"Unauthorised\"";
-    protected static final String invalid = "\"Invalid request\"";
-    protected static final String ok = "\"Ok\"";
+//    protected static final String token = System.getenv("REPROVA_TOKEN");
+//    protected static final String unauthorised = "\"Unauthorised\"";
+//    protected static final String invalid = "\"Invalid request\"";
+//    protected static final String ok = "\"Ok\"";
 
     private final QuestionsDAO questionsDAO;
 
@@ -56,7 +56,7 @@ public class DeleteQuestionCommand extends Command {
 
         return ok;
     }
-    protected static boolean authorised(String token) {
-        return DeleteQuestionCommand.token.equals(token);
-    }
+//    protected static boolean authorised(String token) {
+//        return DeleteQuestionCommand.token.equals(token);
+//    }
 }
