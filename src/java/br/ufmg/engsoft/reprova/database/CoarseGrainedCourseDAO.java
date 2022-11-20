@@ -46,7 +46,7 @@ public class CoarseGrainedCourseDAO extends CourseDAO {
 	@Override
 	public Course get(Course course) {
 		if (course == null) {
-			throw new IllegalArgumentException("CourseDAO.nullMessageException");
+			throw new IllegalArgumentException(CourseDAO.nullMessageException);
 		}
 		Document doc = this.collection.find(verifyAnd(course)).first();
 		return new CoarseGrainedCourse(doc.getInteger("year"), Course.Reference.fromInt(doc.getInteger("ref")),
@@ -56,7 +56,7 @@ public class CoarseGrainedCourseDAO extends CourseDAO {
 	@Override
 	public boolean delete(Course course) {
 		if (course == null) {
-			throw new IllegalArgumentException("CourseDAO.nullMessageException");
+			throw new IllegalArgumentException(CourseDAO.nullMessageException);
 		}
 		boolean result = this.collection.deleteOne(verifyAnd(course)).wasAcknowledged();
 		if (result)
