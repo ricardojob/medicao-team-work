@@ -27,7 +27,7 @@ public class FineGrainedCourseDAO extends CourseDAO {
     @Override
     public void add(Course course) {
     	if (course == null) {
-    		throw new IllegalArgumentException("course mustn't be null");
+    		throw new IllegalArgumentException(CourseDAO.nullMessageException);
     	}
     	List<Student> students = ((FineGrainedCourse) course).students;
     	
@@ -47,7 +47,7 @@ public class FineGrainedCourseDAO extends CourseDAO {
     @Override
     public Course get(Course course) {
     	if (course == null) {
-    		throw new IllegalArgumentException("course mustn't be null");
+    		throw new IllegalArgumentException(CourseDAO.nullMessageException);
     	}
     	Document doc = this.collection.find(and(
     											eq("year", course.year),
@@ -64,7 +64,7 @@ public class FineGrainedCourseDAO extends CourseDAO {
     @Override
     public boolean delete(Course course) {
     	if (course == null) {
-    		throw new IllegalArgumentException("course mustn't be null");
+    		throw new IllegalArgumentException(CourseDAO.nullMessageException);
     	}
     	boolean result = this.collection.deleteOne(and(
 														eq("year", course.year),

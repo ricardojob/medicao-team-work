@@ -21,6 +21,7 @@ public abstract class CourseDAO {
      */
     protected final Json json;
 
+    protected static String nullMessageException = "course mustn't be null";
     /**
      * Questions collection.
      */
